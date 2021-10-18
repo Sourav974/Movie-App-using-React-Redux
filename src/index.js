@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./components/App";
@@ -30,8 +30,30 @@ const store = createStore(
   rootReducer,
   composeWithDevTools(applyMiddleware(logger, thunk))
 );
+
+export const StoreContext = createContext();
+
+console.log("StoreContext", StoreContext);
 // store.dispatch({
 //   type:'ADD_MOVIES',
 //   movies:[{name:'Superman'}]
 // })
-ReactDOM.render(<App store={store} />, document.getElementById("root"));
+
+class Provider extends React.Component {
+  render() {
+    const { store } = this.props;
+    return (
+      <StoreContext.Provider value={store}>
+        {this.props.children}
+      </StoreContext.Provider>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+
+  document.getElementById("root")
+);
